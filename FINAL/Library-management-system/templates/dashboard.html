@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Dashboard</title>
+
+    <style>
+        body {
+            position: relative;
+            color: white; /* Set text color to white */
+            padding-top: 50px; /* Adjust the padding as needed */
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20230526/pngtree-an-old-bookcase-in-a-library-image_2642908.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(5px); /* Adjust the blur level as needed */
+            z-index: -1;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 24px; /* Adjust the font size as needed */
+        }
+
+        h2 {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto; /* Center the table */
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid white; /* Set border color to white */
+        }
+
+        th.header {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Optional: Style the form button */
+        form button {
+            padding: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>LIBRARY LOGIN FOR USERS</h1>
+    <h2>Welcome, {{ username }}!</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th colspan="8" class="header">AVAILABLE BOOKS FOR RENT</th>
+            </tr>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>ISBN</th>
+                <th>Publisher</th>
+                <th>Pages</th>
+                <th>Copies</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+                <tr>
+                    <td>{{ book.id }}</td>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.isbn }}</td>
+                    <td>{{ book.publisher }}</td>
+                    <td>{{ book.page }}</td>
+                    <td>{{ book.copies }}</td>
+                    <td>
+                        <form action="/request" method="post">
+                            <input type="hidden" name="book_id" value="{{ book.id }}">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <button type="submit">Request</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    
+        
+
+    <div id="bookInfo">
+        <!-- Book information will be displayed here -->
+    </div>
+
+    <form action="/userlogin" method="get">
+        <button type="submit">Go to User Login</button>
+    </form>
+
+    <script>
+        function displayBookInfo() {
+            var selectedBookId = document.getElementById("books").value;
+            var selectedBookInfo = {% for book in books %}{% if book.id == selectedBookId %}{{ book | tojson }}{% endif %}{% endfor %};
+            var bookInfoDiv = document.getElementById("bookInfo");
+            bookInfoDiv.innerHTML = `<p>Title: ${selectedBookInfo.title}</p><p>Author: ${selectedBookInfo.author}</p>`;
+        }
+    </script>
+</body>
+</html>
